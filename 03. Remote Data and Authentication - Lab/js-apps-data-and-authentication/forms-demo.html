@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Forms</title>
+</head>
+
+<body>
+    <h1>Forms</h1>
+
+    <form method="POST" id="login-form">
+        <div>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Pesho" />
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" />
+        </div>
+        <div>
+            <input type="submit" id="submit-button" value="Login" />
+        </div>
+    </form>
+
+    <script>
+        let formElement = document.getElementById('login-form');
+
+        formElement.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            let formData = new FormData(e.currentTarget);
+
+            // let { username, password } = Object.fromEntries(formData);
+
+            let username = formData.get('username');
+            let password = formData.get('password');
+            let data = {
+                email: username,
+                password
+            };
+
+            fetch('http://localhost:3030/users/login', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(user => {
+                    localStorage.setItem('_id', user._id);
+                    localStorage.setItem('username', user.username);
+                    localStorage.setItem('accessToken', user.accessToken);
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+        });
+
+    </script>
+</body>
+
+</html>
